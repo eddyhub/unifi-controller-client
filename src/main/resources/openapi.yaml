@@ -1,0 +1,416 @@
+openapi: 3.0.2
+info:
+  version: 0.0.1
+  title: Unifi Controller API spec
+  description: Reverse engineered API for Ubiquiti Unifi Controller
+  contact:
+    name: Eduard Angold
+    email: github@container42.de
+  license:
+    name: Apache License 2.0
+servers:
+  - url: https://{host}:{port}/{basepath}
+    description: The production API server
+    variables:
+      host:
+        default: demo.ubnt.com
+        description: Default we use the demo server provided by ubiquiti
+      port:
+        enum:
+          - '8443'
+          - '443'
+        default: '8443'
+      basepath:
+        default: api
+paths:
+  /login:
+    post:
+      summary: Login to controller
+      operationId: login
+      requestBody:
+        description: Username and password to authenticate. Returns auth cookie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      security: []
+      responses:
+        '200':
+          description: Response with auth cookies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: >-
+                  unifises=qMAemzuHSEBJ70OHbm5xZWHHhSIXA3dk;
+                  csrf_token=8DaWfN95OwRRaJCaipCMKYWcAIDTOu3A
+        '400':
+          description: Not authorized
+  /s/{site}/rest/wlangroup:
+    get:
+      summary: List all WLAN group
+      operationId: listWlanGroups
+      parameters:
+        - in: path
+          name: site
+          required: true
+          schema:
+            type: string
+          description: Name of the site
+      responses:
+        '200':
+          description: A list of WLAN groups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WlanGroups'
+  /s/{site}/rest/wlanconf:
+    get:
+      summary: Lists all WLAN configurations
+      operationId: listWlanConfigs
+      parameters:
+        - in: path
+          name: site
+          required: true
+          schema:
+            type: string
+          description: Name of the site
+      responses:
+        '200':
+          description: A list of WLAN configurations for the specified path
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WlanConfs'
+  /s/{site}/rest/wlanconf/{confId}:
+    parameters:
+      - in: path
+        name: site
+        required: true
+        schema:
+          type: string
+        description: Name of the site
+      - in: path
+        name: confId
+        required: true
+        schema:
+          type: string
+        description: Id of the WLAN configuration
+    get:
+      summary: Lists the specified WLAN configuation
+      operationId: listWlanConfig
+      responses:
+        '200':
+          description: A list of WLAN configurations with the specified id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WlanConfs'
+    put:
+      summary: Update the specified WLAN configuration
+      operationId: updateWlanConfig
+      requestBody:
+        description: WLAN configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WlanConf'
+      responses:
+        '200':
+          description: A list of the changed WLAN configurations with the specified id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WlanConfs'
+    post:
+      summary: Create a new WLAN configuration
+  /self/sites:
+    get:
+      summary: Lists all sites of the authenticated user
+      operationId: listSites
+      responses:
+        '200':
+          description: A list of sites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sites'
+security:
+  - Unifises: []
+    CSRF_Token: []
+components:
+  securitySchemes:
+    Unifises:
+      type: apiKey
+      in: cookie
+      name: unifises
+    CSRF_Token:
+      type: apiKey
+      in: cookie
+      name: csrf_token
+  schemas:
+    Login:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        remember:
+          type: boolean
+        strict:
+          type: boolean
+    LoginResponse:
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Meta:
+      required:
+        - rc
+      properties:
+        rc:
+          type: string
+        msg:
+          type: string
+    Site:
+      required:
+        - _id
+        - name
+      properties:
+        _id:
+          type: string
+        attr_hidden_id:
+          type: string
+        attr_no_delete:
+          type: boolean
+        desc:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+    Sites:
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Site'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    WlanGroup:
+      required:
+        - _id
+        - name
+        - site_id
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        site_id:
+          type: string
+    WlanGroups:
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WlanGroup'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    MacAddress:
+      type: string
+      pattern: ((\d|([a-f]|[A-F])){2}:){5}(\d|([a-f]|[A-F])){2}
+    TimeFrame:
+      type: string
+      pattern: (mon|tue|wed|thu|fri|sat|sun)\|(20|21|22|23|[0-1]\d)[0-5]\d-(20|21|22|23|[0-1]\d)[0-5]\d
+    WlanConf:
+      required:
+        - name
+        - x_passphrase
+        - wpapsk
+        - wpa_mode
+        - wpa_enc
+        - enabled
+        - usergroup_id
+        - wlangroup_id
+      properties:
+        _id:
+          type: string
+        bc_filter_enabled:
+          type: boolean
+        bc_filter_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/MacAddress'
+        dtim_mode:
+          type: string
+        dtim_na:
+          type: integer
+        dtim_ng:
+          type: integer
+        enabled:
+          type: boolean
+        group_rekey:
+          type: integer
+        is_guest:
+          type: boolean
+        mac_filter_enabled:
+          type: boolean
+        mac_filter_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/MacAddress'
+        mac_filter_policy:
+          type: string
+        minrate_na_advertising_rates:
+          type: boolean
+        minrate_na_beacon_rate_kbps:
+          type: integer
+        minrate_na_data_rate_kbps:
+          type: integer
+        minrate_na_enabled:
+          type: boolean
+        minrate_na_mgmt_rate_kbps:
+          type: integer
+        minrate_ng_advertising_rates:
+          type: boolean
+        minrate_ng_beacon_rate_kbps:
+          type: integer
+        minrate_ng_cck_rates_enabled:
+          type: boolean
+        minrate_ng_data_rate_kbps:
+          type: integer
+        minrate_ng_enabled:
+          type: boolean
+        minrate_ng_mgmt_rate_kbps:
+          type: integer
+        name:
+          type: string
+        schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeFrame'
+        schedule_enabled:
+          type: boolean
+        security:
+          type: string
+          enum: [wpapsk]
+          default: wpapsk
+        site_id:
+          type: string
+        usergroup_id:
+          type: string
+        vlan:
+          type: string
+        vlan_enabled:
+          type: boolean
+        wep_idx:
+          type: integer
+        wlangroup_id:
+          type: string
+        wpa_enc:
+          type: string
+          enum: [ccmp]
+          default: ccmp
+        wpa_mode:
+          type: string
+          enum: [wpa2]
+          default: wpa2
+        x_iapp_key:
+          type: string
+        x_passphrase:
+          type: string
+    WlanConfs:
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WlanConf'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    CreateAdmin:
+      required:
+        - cmd
+        - email
+        - name
+        - required_new_password
+        - role
+        - x_password
+        - permissions
+      properties:
+        cmd:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        required_new_password:
+          type: boolean
+        role:
+          type: string
+        x_password:
+          type: string
+        permissions:
+          type: array
+          items:
+            enum: [API_DEVICE_ADOPT, API_DEVICE_RESTART]
+    Admin:
+      required:
+        - admin_id
+        - device_id
+        - email
+        - name
+      properties:
+        admin_id:
+          type: string
+        device_id:
+          type: string
+        email:
+          type: string
+        email_alert_enabled:
+          type: boolean
+        email_alert_grouping_delay:
+          type: integer
+        email_alert_grouping_enabled:
+          type: boolean
+        html_email_enabled:
+          type: boolean
+        is_local:
+          type: boolean
+        is_professional_installer:
+          type: boolean
+        is_super:
+          type: boolean
+        last_site_name:
+          type: string
+        name:
+          type: string
+        requires_new_password:
+          type: boolean
+        super_site_permissions:
+          type: object
+        ui_settings:
+          type: object
