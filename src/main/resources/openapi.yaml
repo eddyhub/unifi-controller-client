@@ -9,7 +9,7 @@ info:
   license:
     name: Apache License 2.0
 servers:
-  - url: https://{host}:{port}/{basepath}
+  - url: https://{host}:{port}/{basePath}
     description: The production API server
     variables:
       host:
@@ -20,7 +20,7 @@ servers:
           - '8443'
           - '443'
         default: '8443'
-      basepath:
+      basePath:
         default: api
 paths:
   /login:
@@ -127,8 +127,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WlanConfs'
-    post:
-      summary: Create a new WLAN configuration
   /self/sites:
     get:
       summary: Lists all sites of the authenticated user
