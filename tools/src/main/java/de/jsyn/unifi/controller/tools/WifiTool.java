@@ -1,5 +1,7 @@
-package de.jsyn.unifi.controller.client;
+package de.jsyn.unifi.controller.tools;
 
+import de.jsyn.unifi.controller.client.ApiClient;
+import de.jsyn.unifi.controller.client.ApiException;
 import de.jsyn.unifi.controller.client.api.DefaultApi;
 import de.jsyn.unifi.controller.client.model.Login;
 import de.jsyn.unifi.controller.client.model.WlanConf;
@@ -8,16 +10,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class WifiTool {
+class WifiTool {
 
     private DefaultApi controller;
 
-    public WifiTool(String basePath, Login login) throws ApiException {
+    WifiTool(String basePath, Login login) throws ApiException {
         controller = new DefaultApi(new ApiClient().setBasePath(basePath));
         controller.login(login);
     }
 
-    public void updatePassword(String siteName, String wifiName, String password) throws ApiException {
+    void updatePassword(String siteName, String wifiName, String password) throws ApiException {
         final Optional<WlanConf> wlanConf = controller.listWlanConfigs(siteName).getData()
                 .stream()
                 .filter(config -> config.getName().equals(wifiName))
@@ -32,10 +34,10 @@ public class WifiTool {
         });
     }
 
-    public List<String> getWifiList(String siteName) throws ApiException {
+    List<String> getWifiList(String siteName) throws ApiException {
         return controller.listWlanConfigs(siteName).getData()
                 .stream()
-                .map(wc -> wc.getName())
+                .map(WlanConf::getName)
                 .collect(Collectors.toList());
     }
 }

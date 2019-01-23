@@ -1,4 +1,4 @@
-package de.jsyn.unifi.controller.client.commands;
+package de.jsyn.unifi.controller.tools.commands;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;

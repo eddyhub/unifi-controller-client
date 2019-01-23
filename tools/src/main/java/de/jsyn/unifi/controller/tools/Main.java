@@ -1,16 +1,17 @@
-package de.jsyn.unifi.controller.client;
+package de.jsyn.unifi.controller.tools;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import de.jsyn.unifi.controller.client.commands.WifiCommand;
+import de.jsyn.unifi.controller.client.ApiException;
+import de.jsyn.unifi.controller.tools.commands.WifiCommand;
 import de.jsyn.unifi.controller.client.model.Login;
 
 public class Main {
 
     private static String DEFAULT_SITE = "default";
     private static String REST_ENDPOINT = "api";
-    private static String PROGRAMM_NAME = "unifi-client";
+    private static String PROGRAMM_NAME = "unifi-tools";
 
     @Parameter(names = {"--controller", "-c"}, description = "Hostname of the controller.", required = true, order = 0)
     private String host;
@@ -30,7 +31,7 @@ public class Main {
     public static void main(String[] args) throws ApiException {
         Main mainCmd = new Main();
         WifiCommand wifiCmd = new WifiCommand();
-        JCommander jc = new JCommander().newBuilder()
+        JCommander jc = JCommander.newBuilder()
                 .addObject(mainCmd)
                 .addCommand(WifiCommand.COMMAND_NAME, wifiCmd)
                 .programName(PROGRAMM_NAME)
@@ -59,9 +60,9 @@ public class Main {
             case WifiCommand.COMMAND_NAME:
                 WifiTool wt = new WifiTool(mainCmd.host, login);
                 if (wifiCmd.listWifis) {
-                    wt.getWifiList(mainCmd.site).stream().forEach(System.out::println);
+                    wt.getWifiList(mainCmd.site).forEach(System.out::println);
                 }
-                if (!wifiCmd.wifiName.isEmpty() && !wifiCmd.wifiPassword.isEmpty()) {
+                else if (!wifiCmd.wifiName.isEmpty() && !wifiCmd.wifiPassword.isEmpty()) {
                     wt.updatePassword(mainCmd.site, wifiCmd.wifiName, wifiCmd.wifiPassword);
                 }
         }
