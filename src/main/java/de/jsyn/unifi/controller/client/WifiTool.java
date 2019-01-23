@@ -4,13 +4,15 @@ import de.jsyn.unifi.controller.client.api.DefaultApi;
 import de.jsyn.unifi.controller.client.model.Login;
 import de.jsyn.unifi.controller.client.model.WlanConf;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class WifiPasswordUpdater {
+public class WifiTool {
 
     private DefaultApi controller;
 
-    public WifiPasswordUpdater(String basePath, Login login) throws ApiException {
+    public WifiTool(String basePath, Login login) throws ApiException {
         controller = new DefaultApi(new ApiClient().setBasePath(basePath));
         controller.login(login);
     }
@@ -28,5 +30,12 @@ public class WifiPasswordUpdater {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public List<String> getWifiList(String siteName) throws ApiException {
+        return controller.listWlanConfigs(siteName).getData()
+                .stream()
+                .map(wc -> wc.getName())
+                .collect(Collectors.toList());
     }
 }
