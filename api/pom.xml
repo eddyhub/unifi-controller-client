@@ -14,6 +14,12 @@
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>openapi-generator</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mailapi</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
@@ -81,7 +87,6 @@
                             <invokerPackage>${project.groupId}.unifi.controller.client</invokerPackage>
                             <modelPackage>${project.groupId}.unifi.controller.client.model</modelPackage>
                             <apiPackage>${project.groupId}.unifi.controller.client.api</apiPackage>
-                            <validateSpec>true</validateSpec>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}-java</artifactId>
                             <artifactVersion>${project.version}</artifactVersion>

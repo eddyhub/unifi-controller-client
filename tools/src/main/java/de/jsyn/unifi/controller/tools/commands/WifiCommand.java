@@ -8,7 +8,7 @@ public class WifiCommand {
 
     public static final String COMMAND_NAME = "wifi";
 
-    @Parameter(names = { "list", "-l"}, description = "List all available wifis.")
+    @Parameter(names = { "--list", "-l"}, description = "List all available wifis.")
     public Boolean listWifis = false;
 
     @Parameter(names = {"--wifi", "--ssid"}, description = "Name/SSID of the wifi.")
@@ -16,4 +16,10 @@ public class WifiCommand {
 
     @Parameter(names = {"--wifiPassword"}, description = "Password to set for the specified wifi.")
     public String wifiPassword;
+
+    @Parameter(names = {"--generateWifiPassword"}, description = "Generate random password.")
+    public Boolean generateWifiPassword = false;
+
+    @Parameter(names = {"--sendViaMail"}, description = "Send set password via mail.")
+    public Boolean sendViaMail = false;
 }

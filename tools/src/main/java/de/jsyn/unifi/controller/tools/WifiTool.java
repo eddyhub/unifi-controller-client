@@ -25,7 +25,7 @@ class WifiTool {
                 .filter(config -> config.getName().equals(wifiName))
                 .findFirst();
         wlanConf.ifPresent(conf -> {
-            conf.setXPassphrase(password);
+            conf.setxPassphrase(password);
             try {
                 controller.updateWlanConfig(siteName, conf.getId(), conf);
             } catch (ApiException e) {
