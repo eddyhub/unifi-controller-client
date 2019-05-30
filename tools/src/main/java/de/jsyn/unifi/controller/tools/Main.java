@@ -87,13 +87,14 @@ public class Main {
         switch (jc.getParsedCommand()) {
             case WifiCommand.COMMAND_NAME:
                 String message = null;
+                String generatedPassword = null;
                 WifiTool wt = new WifiTool(mainCmd.host, login);
                 if (wifiCmd.listWifis) {
                     wt.getWifiList(mainCmd.site).forEach(System.out::println);
                 } else if (wifiCmd.wifiName != null && wifiCmd.wifiPassword != null && !wifiCmd.wifiName.isEmpty() && !wifiCmd.wifiPassword.isEmpty()) {
                     wt.updatePassword(mainCmd.site, wifiCmd.wifiName, wifiCmd.wifiPassword);
                 } else if (wifiCmd.generateWifiPassword && wifiCmd.sendViaMail) {
-                    String generatedPassword = PasswordTool.generatePassword(16);
+                    generatedPassword = PasswordTool.generatePassword(16);
                     message = String.format("Gueltig ab: %s\nGueltig bis: %s\nSSID/WLAN-Name: %s\nPasswort: %s",
                             LocalDateTime.now(), LocalDateTime.now().plusHours(24), wifiCmd.wifiName, generatedPassword);
                     wt.updatePassword(mainCmd.site, wifiCmd.wifiName, generatedPassword);
@@ -107,7 +108,7 @@ public class Main {
                                 .setPassword(mainCmd.mailPassword)
                                 .build();
                         LOG.info(message);
-                        mailTool.sendMessage(mainCmd.mailFrom, mainCmd.mailTo, mainCmd.mailSubject, message);
+                        mailTool.sendMessage(mainCmd.mailFrom, mainCmd.mailTo, mainCmd.mailSubject, message, PasswordTool.generateQrCode(wifiCmd.wifiName, generatedPassword));
                     } else {
                         System.out.println(String.format("Please specify at least the options %s, %s and %s.", CMD_MAIL_HOST, CMD_MAIL_USERNAME, CMD_MAIL_PASSWORD));
                         jc.usage();

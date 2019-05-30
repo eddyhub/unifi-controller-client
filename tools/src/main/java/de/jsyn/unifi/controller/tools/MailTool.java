@@ -5,6 +5,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 public class MailTool {
@@ -17,7 +19,16 @@ public class MailTool {
         mailSession = Session.getInstance(mailProps, createAuthenticator(username, password));
     }
 
-    public void sendMessage(String from, String to, String subject, String msg) throws MessagingException {
+    private static Authenticator createAuthenticator(String username, String password) {
+        return new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        };
+    }
+
+    public void sendMessage(String from, String to, String subject, String msg, File qrcode) throws MessagingException {
         Message message = new MimeMessage(mailSession);
         message.setFrom(new InternetAddress(from));
         message.setRecipients(
@@ -30,18 +41,20 @@ public class MailTool {
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(mimeBodyPart);
 
+        if (qrcode != null) {
+            try {
+                MimeBodyPart code = new MimeBodyPart();
+                code.setContent(msg, "image/png");
+                code.attachFile(qrcode);
+                multipart.addBodyPart(code);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         message.setContent(multipart);
 
         Transport.send(message);
-    }
-
-    private Authenticator createAuthenticator(String username, String password) {
-        return new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        };
     }
 
     public static class MailToolBuilder {

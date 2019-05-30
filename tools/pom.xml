@@ -29,6 +29,10 @@
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.kenglxn.qrgen</groupId>
+            <artifactId>javase</artifactId>
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>

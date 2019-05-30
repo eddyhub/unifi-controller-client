@@ -1,9 +1,13 @@
 package de.jsyn.unifi.controller.tools;
 
+import net.glxn.qrgen.core.scheme.Wifi;
+import net.glxn.qrgen.javase.QRCode;
 import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
+
+import java.io.File;
 
 public class PasswordTool {
 
@@ -24,5 +28,13 @@ public class PasswordTool {
 
     public static String generatePassword(int size) {
         return PASSWORD_GENERATOR.generatePassword(size, ALPHA_RULE, DIGIT_RULE, SPECI_RULE);
+    }
+
+    public static File generateQrCode(String ssid, String password) {
+        Wifi wifi = new Wifi();
+        wifi.setAuthentication(Wifi.Authentication.WPA);
+        wifi.setPsk(password);
+        wifi.setSsid(ssid);
+        return QRCode.from(wifi).withSize(640, 480).file();
     }
 }

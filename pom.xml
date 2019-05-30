@@ -10,6 +10,12 @@
         <developerConnection>scm:git:git@gitlab.com:eddyhub/unifi-controller-client.git</developerConnection>
         <url>https://gitlab.com/eddyhub/unifi-controller-client</url>
     </scm>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -24,6 +30,7 @@
         <jcommander-version>1.72</jcommander-version>
         <java-mail.version>1.6.2</java-mail.version>
         <passay.version>1.5.0</passay.version>
+        <qrgen.version>2.5.0</qrgen.version>
         <spring-boot-maven-plugin-version>2.1.2.RELEASE</spring-boot-maven-plugin-version>
         <dockerfile-maven-version>1.4.10</dockerfile-maven-version>
     </properties>
@@ -45,6 +52,12 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
                 <version>${java-mail.version}</version>
+            </dependency>
+            <!-- Generate QR codes -->
+            <dependency>
+                <groupId>com.github.kenglxn.qrgen</groupId>
+                <artifactId>javase</artifactId>
+                <version>${qrgen.version}</version>
             </dependency>
 
             <!-- generate random password -->

@@ -8,7 +8,7 @@ public class WifiCommand {
 
     public static final String COMMAND_NAME = "wifi";
 
-    @Parameter(names = { "--list", "-l"}, description = "List all available wifis.")
+    @Parameter(names = {"--list", "-l"}, description = "List all available wifis.")
     public Boolean listWifis = false;
 
     @Parameter(names = {"--wifi", "--ssid"}, description = "Name/SSID of the wifi.")
