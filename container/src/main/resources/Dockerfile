@@ -1,4 +1,5 @@
-FROM openjdk:8-jre-alpine
+ARG ARCH=amd64
+FROM ${ARCH}/openjdk:8-jre-alpine
 
 COPY unifi-tools.jar /opt
 

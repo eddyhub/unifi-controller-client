@@ -32,12 +32,14 @@
         <passay.version>1.5.0</passay.version>
         <qrgen.version>2.5.0</qrgen.version>
         <spring-boot-maven-plugin-version>2.1.2.RELEASE</spring-boot-maven-plugin-version>
-        <dockerfile-maven-version>1.4.10</dockerfile-maven-version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+        <groovy-maven-plugin.version>2.1</groovy-maven-plugin.version>
     </properties>
     <modules>
         <module>api</module>
         <module>tools</module>
-        <module>docker</module>
+        <module>container</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -135,4 +137,35 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
+                    <version>${groovy-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.openapitools</groupId>
+                    <artifactId>openapi-generator-maven-plugin</artifactId>
+                    <version>${openapi-generator-version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
