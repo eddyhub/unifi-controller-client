@@ -9,6 +9,8 @@ job:
   script:
     - mkdir ~/.docker
     - echo '{"experimental":"enabled"}' | tee ~/.docker/config.json
-    - apk add --no-cache maven ca-certificates
+    - apk add --no-cache openjdk8 maven ca-certificates
+    - export JAVA_HOME=/usr/lib/jvm/default-jvm
+    - export PATH="$JAVA_HOME/bin:${PATH}"
     - echo "${CONTAINER_REGISTRY_PASSWORD}" | docker login -u "${CONTAINER_REGISTRY_USERNAME}" --password-stdin
     - mvn clean install
