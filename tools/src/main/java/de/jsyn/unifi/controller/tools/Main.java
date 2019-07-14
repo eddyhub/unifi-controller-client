@@ -9,6 +9,7 @@ import de.jsyn.unifi.controller.tools.commands.WifiCommand;
 
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class Main {
@@ -53,6 +54,9 @@ public class Main {
     @Parameter(names = {"--mail-subject"}, description = "Subject for the mail..", order = 40)
     private String mailSubject;
 
+    @Parameter(names = {"--mail-message"}, description = "Message for the mail.. (password will be attached)", order = 40)
+    private String mailMessage = "";
+
     @Parameter(names = {"--help", "-h"}, help = true, order = 999999)
     private boolean help = false;
 
@@ -95,26 +99,30 @@ public class Main {
                     wt.updatePassword(mainCmd.site, wifiCmd.wifiName, wifiCmd.wifiPassword);
                 } else if (wifiCmd.generateWifiPassword && wifiCmd.sendViaMail) {
                     generatedPassword = PasswordTool.generatePassword(16);
-                    message = String.format("Gueltig ab: %s\nGueltig bis: %s\nSSID/WLAN-Name: %s\nPasswort: %s",
-                            LocalDateTime.now(), LocalDateTime.now().plusHours(24), wifiCmd.wifiName, generatedPassword);
+                    message = String.format("%s\nSSID/WLAN-Name: %s\nPasswort: %s",
+                            mainCmd.mailMessage, wifiCmd.wifiName, generatedPassword);
                     wt.updatePassword(mainCmd.site, wifiCmd.wifiName, generatedPassword);
 
                 }
+                MessagingTool msgTool = null;
                 if (wifiCmd.sendViaMail) {
                     if (mainCmd.mailHost != null && mainCmd.mailUsername != null && mainCmd.mailPassword != null) {
-                        final MailTool mailTool = new MailTool.MailToolBuilder()
+                        Properties mailProperties = new MailTool.MailPropertiesBuilder()
                                 .setHost(mainCmd.mailHost)
                                 .setUsername(mainCmd.mailUsername)
                                 .setPassword(mainCmd.mailPassword)
+                                .setFrom(mainCmd.mailFrom)
+                                .setTo(mainCmd.mailTo)
                                 .build();
                         LOG.info(message);
-                        mailTool.sendMessage(mainCmd.mailFrom, mainCmd.mailTo, mainCmd.mailSubject, message, PasswordTool.generateQrCode(wifiCmd.wifiName, generatedPassword));
+                        msgTool = new MailTool(mailProperties);
                     } else {
                         System.out.println(String.format("Please specify at least the options %s, %s and %s.", CMD_MAIL_HOST, CMD_MAIL_USERNAME, CMD_MAIL_PASSWORD));
                         jc.usage();
                         System.exit(-1);
                     }
                 }
+                msgTool.sendMessage(mainCmd.mailSubject, message, PasswordTool.generateQrCode(wifiCmd.wifiName, generatedPassword));
         }
     }
 }

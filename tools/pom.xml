@@ -33,6 +33,10 @@
             <groupId>com.github.kenglxn.qrgen</groupId>
             <artifactId>javase</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
