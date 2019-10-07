@@ -8,7 +8,6 @@ import de.jsyn.unifi.controller.client.model.Login;
 import de.jsyn.unifi.controller.tools.commands.WifiCommand;
 
 import javax.mail.MessagingException;
-import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -32,6 +31,9 @@ public class Main {
 
     @Parameter(names = {"--password", "-p"}, description = "Password to login to controller.", required = true, order = 20)
     private String password;
+
+    @Parameter(names = {"--insecure"}, description = "Don't check the server certificate.", order = 40)
+    private boolean insecure = false;
 
     @Parameter(names = {"--site", "-s"}, description = "Name of the site to login.", order = 30)
     private String site = DEFAULT_SITE;
@@ -92,7 +94,7 @@ public class Main {
             case WifiCommand.COMMAND_NAME:
                 String message = null;
                 String generatedPassword = null;
-                WifiTool wt = new WifiTool(mainCmd.host, login);
+                WifiTool wt = new WifiTool(mainCmd.host, login, mainCmd.insecure);
                 if (wifiCmd.listWifis) {
                     wt.getWifiList(mainCmd.site).forEach(System.out::println);
                 } else if (wifiCmd.wifiName != null && wifiCmd.wifiPassword != null && !wifiCmd.wifiName.isEmpty() && !wifiCmd.wifiPassword.isEmpty()) {
@@ -122,7 +124,9 @@ public class Main {
                         System.exit(-1);
                     }
                 }
-                msgTool.sendMessage(mainCmd.mailSubject, message, PasswordTool.generateQrCode(wifiCmd.wifiName, generatedPassword));
+                if (msgTool != null) {
+                    msgTool.sendMessage(mainCmd.mailSubject, message, PasswordTool.generateQrCode(wifiCmd.wifiName, generatedPassword));
+                }
         }
     }
 }
