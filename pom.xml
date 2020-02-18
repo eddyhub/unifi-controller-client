@@ -3,13 +3,20 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.jsyn</groupId>
     <artifactId>unifi-controller-client</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <scm>
         <connection>scm:git:git@gitlab.com:eddyhub/unifi-controller-client.git</connection>
         <developerConnection>scm:git:git@gitlab.com:eddyhub/unifi-controller-client.git</developerConnection>
         <url>https://gitlab.com/eddyhub/unifi-controller-client</url>
     </scm>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <repositories>
         <repository>
             <id>jitpack.io</id>
