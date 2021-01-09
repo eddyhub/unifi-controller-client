@@ -1,4 +1,4 @@
-package de.jsyn.unifi.controller.tools;
+package de.jsyn.unifi.controller.tools.messaging;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-public class MailTool implements MessagingTool {
+public class Mail {
 
     public static final String USERNAME_PROPERTY = "mailtool.username";
     public static final String PASSWORD_PROPERTY = "mailtool.password";
@@ -18,7 +18,7 @@ public class MailTool implements MessagingTool {
     private Properties mailProperties;
     private Session mailSession;
 
-    public MailTool(Properties properties) {
+    public Mail(Properties properties) {
         this.mailProperties = properties;
         this.mailSession = Session.getInstance(mailProperties, createAuthenticator(properties.getProperty(USERNAME_PROPERTY), properties.getProperty(PASSWORD_PROPERTY)));
     }
@@ -32,7 +32,6 @@ public class MailTool implements MessagingTool {
         };
     }
 
-    @Override
     public void sendMessage(String subject, String msg, File qrcode) {
         try {
             Message message = new MimeMessage(mailSession);

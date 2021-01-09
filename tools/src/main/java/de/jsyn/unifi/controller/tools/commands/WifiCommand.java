@@ -20,6 +20,9 @@ public class WifiCommand {
     @Parameter(names = {"--generateWifiPassword"}, description = "Generate random password.")
     public Boolean generateWifiPassword = false;
 
-    @Parameter(names = {"--sendViaMail"}, description = "Send set password via mail.")
+    @Parameter(names = {"--sendViaMail"}, description = "Send password via mail.")
     public Boolean sendViaMail = false;
+
+    @Parameter(names = {"--sendViaMqtt"}, description = "Send configured password via mqtt message.")
+    public Boolean sendViaMqtt = false;
 }

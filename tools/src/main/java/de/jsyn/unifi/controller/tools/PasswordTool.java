@@ -30,11 +30,19 @@ public class PasswordTool {
         return PASSWORD_GENERATOR.generatePassword(size, ALPHA_RULE, DIGIT_RULE, SPECI_RULE);
     }
 
-    public static File generateQrCode(String ssid, String password) {
+    private static QRCode generateQrCode(String ssid, String password) {
         Wifi wifi = new Wifi();
         wifi.setAuthentication(Wifi.Authentication.WPA);
         wifi.setPsk(password);
         wifi.setSsid(ssid);
-        return QRCode.from(wifi).withSize(640, 480).file();
+        return QRCode.from(wifi).withSize(640, 480);
+    }
+
+    public static File generateQrCodeFile(String ssid, String password) {
+        return generateQrCode(ssid, password).file();
+    }
+
+    public static byte[] generateQrCodeBytes(String ssid, String password) {
+        return generateQrCode(ssid, password).stream().toByteArray();
     }
 }
