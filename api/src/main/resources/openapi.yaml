@@ -312,7 +312,7 @@ components:
           type: boolean
         security:
           type: string
-          enum: [wpapsk]
+          enum: [wpapsk, wpaeap, wep]
           default: wpapsk
         site_id:
           type: string
