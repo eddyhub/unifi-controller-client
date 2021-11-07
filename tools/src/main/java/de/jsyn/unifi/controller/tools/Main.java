@@ -156,7 +156,7 @@ public class Main {
                         if (mainCmd.clientId.isEmpty()) {
                             mainCmd.clientId = UUID.randomUUID().toString();
                         }
-                        try (Mqtt mqtt = new Mqtt(mainCmd.mqttHostUri, mainCmd.clientId)) {
+                        try (Mqtt mqtt = new Mqtt(mainCmd.mqttHostUri, mainCmd.clientId, mainCmd.mqttUsername, mainCmd.mqttPassword)) {
                             if (!mainCmd.mqttJsonTopic.isEmpty())
                                 mqtt.sendMessage(mainCmd.mqttJsonTopic, jsonMessage);
                             if (!mainCmd.mqttImageTopic.isEmpty())

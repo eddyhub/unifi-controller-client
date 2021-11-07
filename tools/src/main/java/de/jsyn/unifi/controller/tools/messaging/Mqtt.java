@@ -1,5 +1,6 @@
 package de.jsyn.unifi.controller.tools.messaging;
 
+
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.io.IOException;
@@ -11,6 +12,14 @@ public class Mqtt implements AutoCloseable {
     public Mqtt(String serverUri, String clientId) throws MqttException {
         publisher = new MqttClient(serverUri, clientId);
         publisher.connect();
+    }
+
+    public Mqtt(String serverUri, String clientId, String username, String password) throws MqttException {
+        publisher = new MqttClient(serverUri, clientId);
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(username);
+        options.setPassword(password.toCharArray());
+        publisher.connect(options);
     }
 
     public void sendMessage(String topic, String msg) throws MqttException {
